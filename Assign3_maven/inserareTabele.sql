@@ -22,12 +22,12 @@ VALUES
 ('Mateescu Denisa','345326','2940618191234','1994-06-18','Nasaud'),
 ('Croitor Emilia','234156','2910517891234','1991-05-17','Cluj-Napoca');
 
-INSERT INTO employee(name,identityCardNumber,personalNumericalCode,address,agency,role,passwordE)
+INSERT INTO employee(name,identityCardNumber,personalNumericalCode,address,role,username,passwordE)
 VALUES
-('Mihaiescu Ion','302456','1901007891234','Cluj-Napoca','BT Baritiu','user','123456'),
-('Balota Ioana','000000','2951005060596','Bistrita','BT Baritiu','user','123456'),
-('admin','000000','2951005060597','Bistrita','BT Baritiu','admin','000000'),
-('Marinescu Ciprian','400623','1920211234121','Cluj-Napoca','BT Marasti','user','112233');
+('Mihaiescu Ion','302456','1901007891234','Cluj-Napoca','admin','ion','123456'),
+('Balota Ioana','000000','2951005060596','Bistrita','doctor','maria','123456'),
+('admin','000000','2951005060597','Bistrita','admin','ioana','000000'),
+('Marinescu Ciprian','400623','1920211234121','bistrita','secretary','elisabeta','112233');
 
 INSERT INTO consultation(employeePnc,patientPnc,dateH,duration,diagnostic,observations)
 VALUES

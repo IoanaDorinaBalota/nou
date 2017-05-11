@@ -86,6 +86,12 @@ public class MysqlConnect {
     
     public static void disconnect()
     {
+    	try{
+    	connection.close();}
+    	catch(Exception e)
+    	{
+    		System.out.println("Eroare deconectare");
+    	}
     	/*Connection con;
     	try{
     	while((con=DriverManager.getConnection(databaseURL))!=null)

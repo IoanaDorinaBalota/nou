@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS employee
 identityCardNumber char(6),
 personalNumericalCode char(13) unique primary key,
 address char(50),
-agency char(50),
 role char(50),
+username char(50) unique,
 passwordE char(30));
 
 

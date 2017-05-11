@@ -14,7 +14,7 @@ public class EmployeeTable {
 	
 	private final static String updateEmployeeInfoStatement =
 			"UPDATE employee" +
-			" set name = ?, identityCardNumber = ?, personalNumericalCode = ?, address=?,agency=?, role=?,passwordE=?" +
+			" set name = ?, identityCardNumber = ?, personalNumericalCode = ?, address=?, role=?,username=?,passwordE=?" +
 			" where personalNumericalCode = ?";
 	
 	private final static String deleteEmployeeStatement =
@@ -24,10 +24,10 @@ public class EmployeeTable {
 	private final static String insertEmployeeStatement =
 			"INSERT into employee values (?,?,?,?,?,?,?)";
 	private final static String selectEmployeeStatement =
-			"SELECT name, personalNumericalCode from employee";
+			"SELECT * from employee";
 	
 	private final static String selectOneEmployeeStatement =
-			"SELECT * from employee where passwordE=? and name=?";
+			"SELECT * from employee where passwordE=? and username=?";
 	
 	private final static String selectAllInfoEmployee =
 			"SELECT * from employee where personalNumericalCode=?";
@@ -49,7 +49,7 @@ public class EmployeeTable {
 	{
 		myConnection=mysql;
 	}
-	public void updateEmoployeeInfo(String name, String identityCardNumber,String PNC,String address,String agency,String role,String password,String oldPNC)
+	public int updateEmoployeeInfo(String name, String identityCardNumber,String PNC,String address,String role,String username,String password,String oldPNC)
 	{
 		PreparedStatement updateStatement = null;
 		String sql0="SET FOREIGN_KEY_CHECKS=0";
@@ -64,20 +64,22 @@ public class EmployeeTable {
 		updateStatement.setString(2, identityCardNumber);
 		updateStatement.setString(3, PNC);
 		updateStatement.setString(4, address);
-		updateStatement.setString(5, agency);
-		updateStatement.setString(6, role);
+		updateStatement.setString(5, role);
+		updateStatement.setString(6, username);
 		updateStatement.setString(7, password);
 		updateStatement.setString(8, oldPNC);
 		updateStatement.execute();
 		
 		updateStatement = myConnection.prepareStatement(sql1);
 		updateStatement.executeUpdate();
+		return 0;
 
 		} 
 		catch (Exception e) 
 		{
 			System.out.println("ERoare update employee");
 			e.printStackTrace();
+			return 1;
 		} 
 
 	}
@@ -109,7 +111,7 @@ public class EmployeeTable {
 		} 
 	}
 	
-	public void insertEmployee(String name, String identityCardNumber,String PNC,String address,String agency,String role,String password)
+	public int insertEmployee(String name, String identityCardNumber,String PNC,String address,String role,String username,String password)
 	{
 		PreparedStatement updateStatement = null;
 		try {
@@ -118,16 +120,18 @@ public class EmployeeTable {
 			updateStatement.setString(2, identityCardNumber);
 			updateStatement.setString(3, PNC);
 			updateStatement.setString(4, address);
-			updateStatement.setString(5, agency);
-			updateStatement.setString(6, role);
+			updateStatement.setString(5, role);
+			updateStatement.setString(6, username);
 			updateStatement.setString(7, password);
 			updateStatement.executeUpdate();
+			return 0;
 			
 		}
 		catch (Exception e) 
 		{
 			System.out.println("ERoare INSERT EMPLOYEE");
 			e.printStackTrace();
+			return 1;
 		} 
 	}
 	

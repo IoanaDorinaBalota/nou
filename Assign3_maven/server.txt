@@ -1,0 +1,68 @@
+package clientServerLogin;
+
+import java.io.ObjectInputStream;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class ServerNew {
+
+	private ServerSocket socket;
+    private int port;
+    private boolean listening; //status for listening
+    
+    public ServerNew(){
+
+        this.port = 5555; //default port
+        this.listening = false;
+    }
+    
+    public void startServer() {
+        if (!listening) {
+        	System.out.println("Serverul s-a conectat");
+        	try{
+        	socket = new ServerSocket(port);
+        	this.listening = true;
+        	System.out.println("Serverul  asteapta clienti");
+        	}
+        	catch(Exception ex)
+        	{
+        		System.out.println("Nu se poate crea server-ul");
+        	}      
+        }
+    }
+    
+    public void runServer()
+    {
+    	startServer();
+    	while(listening==true)
+    	{
+    		try{
+    		Socket client = socket.accept();// wait for client to connect
+    		
+    		ObjectInputStream b = new ObjectInputStream(client.getInputStream());
+    		String received = (String) b.readObject();
+            PrintWriter output = new PrintWriter(client.getOutputStream(), true);
+            output.println(received);
+            b.close();
+            output.close();
+            client.close();
+    		}
+    		catch(Exception ex)
+    		{
+    			System.out.println("Eroare acceptare clienti");
+    		
+    		}
+    	}
+    }
+    
+    
+    public static void main(String args[])
+    {
+    	ServerNew server=new ServerNew();
+    	server.runServer();
+    }
+}
