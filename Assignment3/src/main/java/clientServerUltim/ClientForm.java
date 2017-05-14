@@ -28,49 +28,29 @@ import java.awt.event.ActionEvent;
 
 import gui.Admin;
 import gui.Admin.*;
+import javax.swing.JTabbedPane;
+import javax.swing.JPanel;
 
 public class ClientForm extends Observable implements Runnable {
 
 	private JFrame frame;
 	private JTextField textField;
 	private JTextField textField_1;
+	static int id=0;
 	
-    /**
-     * Uses to connect to the server 
-     */
+  
     private Socket socket;
-
-    /**
-     * For reading input from server. 
-     */
     private BufferedReader br;
-
-    /**
-     * For writing output to server. 
-     */
-    //private PrintWriter pw;
-    private ObjectOutputStream pw;
-
-    /**
-     * Status of client. 
-     */
-    private boolean connected;
-
-    /**
-     * Port number of server
-     */
-     private int port=5555; //default port
-
-    /**
-     * Host Name or IP address in String form
-     */
+    private static ObjectOutputStream pw;
+    private static boolean connected;//static boolean connected;
+    private int port=5555; //default port
     private String hostName="localhost";//default host name
-
-	/**
-	 * Launch the application.
-	 */
+    private String oldInfo[];
+    private JTextField textField_2;
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
+		ClientForm window = new ClientForm();
+		window.frame.setVisible(true);
+		/*EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					ClientForm window = new ClientForm();
@@ -80,24 +60,16 @@ public class ClientForm extends Observable implements Runnable {
 					e.printStackTrace();
 				}
 			}
-		});
+		});*/
 	}
 
-	/**
-	 * Create the application.
-	 * @wbp.parser.entryPoint
-	 */
-	public ClientForm() {
-		
+
+	public ClientForm()
+	{
+		System.out.println("Intra in constructorul client form");
 		connected=false;
-		try{
-		connect("localhost",5555);
-		} 
-		catch(Exception ex)
-		{
-			System.out.println("Eroare conectare cllient");
-		}
-		//connect("localhost",5555);
+		id++;
+		oldInfo=new String[]{"unu","doi"};
 		initialize();
 	}
 
@@ -108,58 +80,79 @@ public class ClientForm extends Observable implements Runnable {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
 		frame.setVisible(true);
+		frame.getContentPane().setLayout(null);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setBounds(12, 0, 408, 240);
+		frame.getContentPane().add(tabbedPane);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("New tab", null, panel, null);
+		panel.setLayout(null);
 		
 		JLabel lblUsername = new JLabel("USERNAME");
+		lblUsername.setBounds(12, 13, 160, 16);
+		panel.add(lblUsername);
 		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblUsername.setBounds(27, 37, 160, 16);
-		frame.getContentPane().add(lblUsername);
 		
 		JLabel lblPassword = new JLabel("PASSWORD");
+		lblPassword.setBounds(12, 55, 160, 16);
+		panel.add(lblPassword);
 		lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblPassword.setBounds(27, 88, 160, 16);
-		frame.getContentPane().add(lblPassword);
 		
 		textField = new JTextField();
-		textField.setBounds(180, 35, 183, 22);
-		frame.getContentPane().add(textField);
+		textField.setBounds(117, 13, 183, 22);
+		panel.add(textField);
 		textField.setColumns(10);
-		frame.getContentPane().add(textField);
 		
 		textField_1 = new JTextField();
-		textField_1.setBounds(180, 86, 183, 22);
-		frame.getContentPane().add(textField_1);
+		textField_1.setBounds(115, 52, 183, 22);
+		panel.add(textField_1);
 		textField_1.setColumns(10);
-		frame.getContentPane().add(textField_1);
 		
 		JButton btnLogin = new JButton("LOGIN");
+		btnLogin.setBounds(77, 127, 97, 25);
+		panel.add(btnLogin);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("New tab", null, panel_1, null);
+		tabbedPane.setEnabledAt(1, false);
+		panel_1.setLayout(null);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(38, 29, 116, 22);
+		panel_1.add(textField_2);
+		textField_2.setColumns(10);
+		
+		JButton btnNewButton = new JButton("New button");
+		btnNewButton.setBounds(64, 87, 97, 25);
+		panel_1.add(btnNewButton);
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try{
-					
+					//connect("localhost",5555);
+					try{
+						connect("localhost",5555);
+						} 
+						catch(Exception ex)
+						{
+							System.out.println("Eroare conectare cllient form");
+						}
 				String msg[]=new String[]{"login",textField.getText(),textField_1.getText()};
-				BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				sendMessage(msg);
-				//Socket s = new Socket("localhost", 5000);
-				/*ObjectOutputStream p = new ObjectOutputStream(socket.getOutputStream());
-				p.writeObject(msg);
-		        p.flush();
-
-		        // Here we read the details from server
-		        BufferedReader response = new BufferedReader(new InputStreamReader(
-		                socket.getInputStream()));
-		        String raspuns=response.readLine().toString();
-		        if(raspuns.equalsIgnoreCase("0"))
-		        {
-		        	Admin adm=new Admin();
-		        }
-		        System.out.println("The server respond: " + raspuns);
-		        p.close();
-		        response.close();
-		        socket.close();*/
+				//BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				
+				if(msg[1].equals(oldInfo[0])&&msg[2].equals(oldInfo[1]))
+					JOptionPane.showMessageDialog(null,"EROARE logare: deja sunteti logat", "error",JOptionPane.ERROR_MESSAGE);
+				else
+				{		sendMessage(msg);
+						oldInfo[0]=msg[1];
+						oldInfo[1]=msg[2];
 				
 				}
+				
+				}
+
 				catch(Exception ex)
 				{
 					System.out.println("Eroare trimitere mesaj login");
@@ -167,8 +160,6 @@ public class ClientForm extends Observable implements Runnable {
 				}
 			}
 		});
-		btnLogin.setBounds(90, 148, 97, 25);
-		frame.getContentPane().add(btnLogin);
 		frame.addWindowListener(new WindowAdapter()
         {
             @Override
@@ -182,29 +173,45 @@ public class ClientForm extends Observable implements Runnable {
 	}
 	
 	
-	public void connect(String hostName, int port) throws IOException {
-        if(!connected)
+	public void connect(String hostName, int port) {
+        if(connected==false)
         {
-	     this.hostName = hostName;
+        	
+        try{
+           this.hostName = hostName;
            this.port = port;
            socket = new Socket(hostName,port);
-           //get I/O from socket
            br = new BufferedReader(new         InputStreamReader(socket.getInputStream()));
-          // pw = new PrintWriter(socket.getOutputStream(),true);
            pw = new ObjectOutputStream(socket.getOutputStream());
 		   connected = true;
-           //initiate reading from server...
+		   System.out.println("Tocmai s-a conectat "+this.toString());
            Thread t = new Thread(this);
-           t.start(); //will call run method of this class
+           t.start();
+        	}
+        catch (Exception ex){
+        	System.out.println("A aparut o eroare la conectare");}
         }
+        else
+        	System.out.println("E conectat");
     }
-	public void sendMessage(String []msg) throws IOException
+	public static void sendMessage(String msg[])
     {
-		if(connected) {
+		
+		if(connected==true) {
+			try
+			{
 			System.out.println("intra send"+msg[0]);
-	        //pw.println(msg);
 			pw.writeObject(msg);
-        } else throw new IOException("Not connected to server");
+			//br = new BufferedReader(new         InputStreamReader(socket.getInputStream()));
+			//System.out.println("nou"+br.readLine());
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+			}
+        } 
+		else System.out.println("Clientul nu e conectat la server");
+		//else throw new IOException("Not connected to server");
     }
 
     public void disconnect() {
@@ -233,19 +240,20 @@ public class ClientForm extends Observable implements Runnable {
 
     public void run() {
 	   String msg = ""; //holds the msg recieved from server
+	   System.out.println("Acest clientForm e "+this.toString()+" "+String.valueOf(connected));
          try {
             while(connected && (msg = br.readLine())!= null)
             {
 			 System.out.println("Server:"+msg);
-			 
-			 //notify observers//
-			 this.setChanged();
-			 //notify+send out recieved msg to Observers
+			 if(msg.equals("0"))
+				 {Admin adm=new Admin();}
+
+			 	 this.setChanged();
               	 this.notifyObservers(msg);
             }
          }
          catch(IOException ioe) { }
-         finally { connected = false; }
+         //finally { connected = false; }
     }
 
     public boolean isConnected() {
@@ -268,7 +276,4 @@ public class ClientForm extends Observable implements Runnable {
     public void setHostName(String hostName){
             this.hostName = hostName;
         }
-
-	
-	
 }

@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import business.AdminOperations;
+import clientServerUltim.ClientForm;
 
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
@@ -61,15 +62,6 @@ public class Admin {
 	private String tableCnp;
 	
 	
-	//CLIENT
-	private Socket socket;
-	private ObjectInputStream br;//BufferedReader br;
-	private PrintWriter pw;//ObjectOutputStream pw;//PrintWriter pw;
-	private boolean connected;
-	private int port=5555; //default port
-	private String hostName="127.0.0.1";//"localhost";//default host name
-	
-	ObjectOutputStream p;
 
 	/**
 	 * Launch the application.
@@ -91,9 +83,6 @@ public class Admin {
 	 * Create the application.
 	 */
 	public Admin() {
-		connected=false;
-		//connect("localhost",5555);
-		admOp=new AdminOperations();
 		initialize();
 		
 	}
@@ -213,11 +202,12 @@ public class Admin {
 			try{
 				//connect("localhost",5555);
 				String msg[]=new String[]{"adaugaAngajat",textField.getText(),textField_1.getText(),textField_2.getText(),textField_3.getText(),comboBox.getSelectedItem().toString(),textField_4.getText(),passwordField.getText()};
-				sendMessage(msg);
+				ClientForm.sendMessage(msg);
 				}
 			catch(Exception ex)
 			{
 				System.out.println("Eroare trimitere mesaj adauga angajat");
+				ex.printStackTrace();
 			}
 			}
 		});
@@ -456,68 +446,4 @@ public class Admin {
 	}
 	
 	
-	
-	public void connect(String hostName, int port) {//throws IOException {
-		if(!connected)
-        {
-           System.out.println("Login Connecting to " + hostName + " on port " + port);
-	       this.hostName = hostName;
-           this.port = port;
-           try{
-           socket = new Socket(hostName,port);
-           System.out.println("Conecatre cu succes adaugare angajat");
-           }
-           catch(Exception ex)
-           {
-        	   System.out.println("Nu pot face un socket client adauga angajat");
-           }
-        	try{
-          // br = new ObjectInputStream(socket.getInputStream());//new BufferedReader(new         InputStreamReader(socket.getInputStream()));
-          // pw = new PrintWriter(socket.getOutputStream(),true);//new ObjectOutputStream(socket.getOutputStream());//new PrintWriter(socket.getOutputStream(),true);
-        		p = new ObjectOutputStream(socket.getOutputStream());
-        		System.out.println("Conectat" );
-           }
-            catch(IOException e) {
-            	System.out.println("Exceptie buffer citire scriere");
-            	e.printStackTrace();
-            }
-		   connected = true;
-           //initiate reading from server...
-           //Thread t = new Thread(this);
-          // t.start(); //will call run method of this class
-           System.out.println("ajunge ");
-        }
-    }
-
-    public void sendMessage(String[] msg) throws IOException
-    {
-    	System.out.println("intra send message");
-    	if(connected) {
-	        //pw.println(msg);//writeObject(new String(msg));//println(msg);
-	        //pw.flush();
-			p.writeObject((String[])(msg));//new Student(name, age, mark));
-	        p.flush();
-	        BufferedReader response = new BufferedReader(new InputStreamReader(
-	                socket.getInputStream()));
-	        System.out.println("The server respond: " + response.readLine());
-	        p.close();
-	        response.close();
-	        disconnect();
-        } else throw new IOException("Login Not connected to server");
-    }
-
-    public void disconnect() {
-		if(socket != null && connected)
-        {
-          try {
-			socket.close();
-          }catch(IOException ioe) {
-			//unable to close, nothing to do...
-          }
-          finally {
-			this.connected = false;
-          }
-        }
-    }
-
 }

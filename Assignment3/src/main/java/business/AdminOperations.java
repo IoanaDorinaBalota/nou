@@ -57,12 +57,12 @@ public class AdminOperations {
 			else if(role.equalsIgnoreCase("doctor"))
 			{
 				JOptionPane.showMessageDialog(null,"Logare DOCTOR", "succes",JOptionPane.INFORMATION_MESSAGE);
-				return 0;
+				return 1;
 			}
 			else if(role.equalsIgnoreCase("secretary"))
 			{
 				JOptionPane.showMessageDialog(null,"Logare SECRETARY", "succes",JOptionPane.INFORMATION_MESSAGE);
-				return 0;
+				return 2;
 			}
 			else 
 			{

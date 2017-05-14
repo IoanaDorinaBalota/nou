@@ -8,23 +8,27 @@ import java.io.OutputStream;
 import java.io.IOException;
 import java.util.Observable;
 
+import business.AdminOperations;
+import gui.Admin;
+
 public class ClientThread extends Observable implements Runnable {
-    /** For reading input from socket */
-    private BufferedReader br;
+    
+	private BufferedReader br;
     ObjectInputStream b;
-
-    /** For writing output to socket. */
     private PrintWriter pw;
-
-    /** Socket object representing client connection */
-
     private Socket socket;
     private boolean running;
-
-    public ClientThread(Socket socket) throws IOException {
+    
+    public static int id=0;
+    AdminOperations admOp;
+    
+    public ClientThread(Socket socket)
+    {
+    	id++;
         this.socket = socket;
+        admOp=new AdminOperations();
         running = false;
-        //get I/O from socket
+
         try {
             br = new BufferedReader(
                      new InputStreamReader(
@@ -37,7 +41,7 @@ public class ClientThread extends Observable implements Runnable {
             running = true; //set status
         }
         catch (IOException ioe) {
-            throw ioe;
+           // throw ioe;
         }
     }
 	
@@ -52,21 +56,24 @@ public class ClientThread extends Observable implements Runnable {
         }catch(IOException ioe){ };
     }
 
-    public void run() {
-        String msg [];//= ""; //will hold message sent from client
+    public void run() 
+    {
+        String msg [];
+        System.out.println("Acest clientThread e "+this.toString()+" "+String.valueOf(running));
         try {
 	        pw.println("Welcome to Java based Server");
         	}
 	    catch(Exception ioe) { }
-
-	  //start listening message from client//
-        try {
+        try 
+        {
         	while(running)
-        	{
+        	{System.out.println("Acest clientThread e "+this.toString()+" "+String.valueOf(running));
         		try
         		{   msg=(String[])b.readObject();
-        		 	pw.println(msg[0]);
-        		 	System.out.println(msg[0]);
+        			int rez=admOp.verifyString(msg);
+        			/*if(rez==0)
+        				{Admin adm=new Admin();}*/
+        		 	pw.println(String.valueOf(rez));
         		 	if(msg[0].equalsIgnoreCase("quit"))running=false;
         		 	
         		}
@@ -85,7 +92,7 @@ public class ClientThread extends Observable implements Runnable {
             }
        catch (Exception ioe)
         {
-                running = false;
+               // running = false;
         }
    
         //notify the observers for cleanup etc.
